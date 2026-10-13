@@ -1,4 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@400;700&display=swap');
+
 /* Tailwind CSS base directives — do not remove */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --color-brand: #D62828;
+    --color-bg: #fdfdfd;
+    --color-bg-dark: #111111;
+    --color-text: #111111;
+    --color-muted: #a3a3a3;
+    --font-sans: 'Inter', ui-sans-serif, system-ui;
+    --font-heading: 'Playfair Display', serif;
+  }
+
+  html {
+    font-family: var(--font-sans);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply min-h-screen flex flex-col bg-[#f8f8f7] text-neutral-800;
+  }
+
+  ::selection {
+    background: rgba(214, 40, 40, 0.18);
+    color: #111111;
+  }
+}
+
+@layer utilities {
+  .font-heading {
+    font-family: var(--font-heading);
+  }
+  /* Simple form input styling */
+  .form-input {
+    @apply border border-neutral-gray-300 rounded px-3 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand;
+  }
+}
