@@ -269,6 +269,8 @@ npm run build
 2. Set the build command to `npm ci --include=dev && npm run build` so TypeScript and its declaration packages are installed during compilation.
 3. Set the start command to `npm run start`.
 4. Add `MONGODB_URI`, `ADMIN_USERNAME`, `ADMIN_PASSWORD_HASH`, `JWT_SECRET`, and `CORS_ORIGIN=<your Vercel URL>` as Render environment variables. Render supplies `PORT` automatically.
+5. Set `ADMIN_USERNAME` to the username you will enter on the login form. Set `ADMIN_PASSWORD_HASH` to a bcrypt hash of the password, not the plaintext password or the example placeholder. Save the variables and redeploy the service so the running instance uses them.
+6. If login still returns 401, check the Render service logs for whether the username or password comparison failed; the log messages never include either credential.
 
 **Production URL:** PENDING
 

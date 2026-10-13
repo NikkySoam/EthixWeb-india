@@ -17,19 +17,21 @@ export const loginAdmin = async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Username and password required' });
     }
 
-    const adminUsername = getEnv('ADMIN_USERNAME');
+    const adminUsername = getEnv('ADMIN_USERNAME').trim();
     const adminPasswordHash = getEnv('ADMIN_PASSWORD_HASH');
 
-    if (username !== adminUsername) {
+    if (username.trim().toLowerCase() !== adminUsername.toLowerCase()) {
+      console.warn('[admin] Login rejected: username did not match ADMIN_USERNAME');
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
     const passwordMatch = await bcrypt.compare(password, adminPasswordHash);
     if (!passwordMatch) {
+      console.warn('[admin] Login rejected: password did not match ADMIN_PASSWORD_HASH');
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    const token = jwt.sign({ username }, getEnv('JWT_SECRET'), { expiresIn: '2h' });
+    const token = jwt.sign({ username: adminUsername }, getEnv('JWT_SECRET'), { expiresIn: '2h' });
     const isProd = process.env.NODE_ENV === 'production';
     res.cookie('token', token, {
       httpOnly: true,
