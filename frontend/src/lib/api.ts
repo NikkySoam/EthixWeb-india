@@ -2,7 +2,17 @@ const DEFAULT_API_BASE_URL = "http://localhost:5000/api";
 
 const getBaseUrl = () => {
   const configuredBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim();
-  return configuredBaseUrl || DEFAULT_API_BASE_URL;
+  const baseUrl = (configuredBaseUrl || DEFAULT_API_BASE_URL).replace(/\/+$/, "");
+
+  try {
+    const parsedUrl = new URL(baseUrl);
+    if (!parsedUrl.pathname.replace(/\/+$/, "").endsWith("/api")) {
+      parsedUrl.pathname = `${parsedUrl.pathname.replace(/\/+$/, "")}/api`;
+    }
+    return parsedUrl.toString().replace(/\/$/, "");
+  } catch {
+    return baseUrl.endsWith("/api") ? baseUrl : `${baseUrl}/api`;
+  }
 };
 
 const buildUrl = (path: string) => {

@@ -17,6 +17,7 @@ const app = express();
 app.use(cookieParser());
 const PORT = process.env.PORT ?? 5000;
 const allowedOrigins = [
+  'https://ethix-web-india.vercel.app',
   'http://localhost:5173',
   'http://localhost:5174',
   'http://localhost:4173',
