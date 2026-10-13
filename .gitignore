@@ -1,0 +1,25 @@
+# ── Node ──────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ── Build outputs ──────────────────────────────────────
+dist/
+build/
+out/
+
+# ── Environment variables (never commit real secrets) ──
+.env
+.env.local
+.env.*.local
+
+# ── Editor / OS artefacts ──────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/settings.json
+.idea/
+
+# ── TypeScript incremental build ──────────────────────
+*.tsbuildinfo

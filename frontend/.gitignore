@@ -1,0 +1,24 @@
+# Frontend Git ignore
+
+# ── Dependencies ──────────────────────────────────────
+node_modules/
+
+# ── Build output ──────────────────────────────────────
+dist/
+build/
+
+# ── Environment secrets ────────────────────────────────
+.env
+.env.*
+!.env.example
+
+# ── TypeScript generated files ────────────────────────
+*.tsbuildinfo
+
+# ── Vite generated files (from tsc -b composite build) ─
+vite.config.js
+vite.config.d.ts
+
+# ── Editor files ──────────────────────────────────────
+.vscode/
+.idea/
