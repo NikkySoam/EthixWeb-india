@@ -265,10 +265,10 @@ npm run build
 
 ### Backend → Render
 
-1. Connect the `ethixweb-india/backend` folder to a Render Web Service.
-2. Set build command: `npm run build`
-3. Set start command: `npm run start`
-4. Add environment variables: `MONGO_URI`, `NODE_ENV=production`, `CORS_ORIGIN=<your Vercel URL>`, `PORT=10000`
+1. Create or update the Render Web Service from the root `render.yaml` Blueprint, or set the service root directory to `backend`.
+2. Set the build command to `npm ci --include=dev && npm run build` so TypeScript and its declaration packages are installed during compilation.
+3. Set the start command to `npm run start`.
+4. Add `MONGODB_URI`, `ADMIN_USERNAME`, `ADMIN_PASSWORD_HASH`, `JWT_SECRET`, and `CORS_ORIGIN=<your Vercel URL>` as Render environment variables. Render supplies `PORT` automatically.
 
 **Production URL:** PENDING
 
