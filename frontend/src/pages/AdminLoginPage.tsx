@@ -70,6 +70,7 @@ export default function AdminLoginPage() {
               <p className="mt-3 text-sm leading-6 text-neutral-600">
                 Sign in to continue to your admin dashboard.
               </p>
+              <p className='mt-3 text-green-500'>Please wait while the Render service starts...</p>
             </div>
 
             {error && (

@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { api, ApiError } from '../lib/api';
 
+type LeadStatus = 'new' | 'contacted' | 'qualified' | 'closed';
+
 interface Lead {
   _id: string;
   name: string;
@@ -10,6 +12,7 @@ interface Lead {
   company?: string;
   service: string;
   message: string;
+  status: LeadStatus;
   createdAt: string; // ISO string
   updatedAt: string;
 }
@@ -70,12 +73,20 @@ export default function AdminDashboardPage() {
     }
   };
 
-  // Placeholder for status update – currently leads have no status field.
-  const handleStatusChange = async (id: string, newStatus: string) => {
+  const handleStatusChange = async (id: string, newStatus: LeadStatus) => {
+    const previousLead = leads.find((lead) => lead._id === id);
+    if (!previousLead || previousLead.status === newStatus) return;
+
+    setLeads((currentLeads) =>
+      currentLeads.map((lead) => lead._id === id ? { ...lead, status: newStatus } : lead),
+    );
+
     try {
       await api.patch(`/admin/leads/${id}`, { status: newStatus }, { credentials: 'include' });
-      await loadLeads();
     } catch (err) {
+      setLeads((currentLeads) =>
+        currentLeads.map((lead) => lead._id === id ? previousLead : lead),
+      );
       alert(`Error: ${err instanceof Error ? err.message : 'Update failed'}`);
     }
   };
@@ -95,7 +106,7 @@ export default function AdminDashboardPage() {
         lead.name.toLowerCase().includes(term) ||
         lead.email.toLowerCase().includes(term) ||
         (lead.company?.toLowerCase().includes(term) ?? false);
-      const matchesStatus = statusFilter ? (lead as any).status === statusFilter : true;
+      const matchesStatus = statusFilter ? lead.status === statusFilter : true;
       return matchesSearch && matchesStatus;
     });
   }, [leads, search, statusFilter]);
@@ -113,12 +124,12 @@ export default function AdminDashboardPage() {
     },
     {
       label: 'Qualified',
-      value: String(leads.filter((lead) => (lead as any).status === 'qualified').length),
+      value: String(leads.filter((lead) => lead.status === 'qualified').length),
       accent: 'bg-sky-50 text-sky-700',
     },
     {
       label: 'Follow-ups',
-      value: String(leads.filter((lead) => (lead as any).status === 'contacted').length),
+      value: String(leads.filter((lead) => lead.status === 'contacted').length),
       accent: 'bg-amber-50 text-amber-700',
     },
   ];
@@ -188,8 +199,7 @@ export default function AdminDashboardPage() {
                   <option value="new">New</option>
                   <option value="contacted">Contacted</option>
                   <option value="qualified">Qualified</option>
-                  <option value="lost">Lost</option>
-                  <option value="won">Won</option>
+                  <option value="closed">Closed</option>
                 </select>
               </div>
 
@@ -228,23 +238,17 @@ export default function AdminDashboardPage() {
                           </td>
                           <td className="px-3 py-4">{new Date(lead.createdAt).toLocaleDateString()}</td>
                           <td className="px-3 py-4">
-                            {(lead as any).status ? (
-                              <select
-                                className="rounded-lg border border-neutral-300 bg-white px-2 py-1.5 text-sm text-neutral-700 outline-none focus:border-brand"
-                                value={(lead as any).status}
-                                onChange={(e) => handleStatusChange(lead._id, e.target.value)}
-                              >
-                                <option value="new">New</option>
-                                <option value="contacted">Contacted</option>
-                                <option value="qualified">Qualified</option>
-                                <option value="lost">Lost</option>
-                                <option value="won">Won</option>
-                              </select>
-                            ) : (
-                              <span className="rounded-full bg-neutral-100 px-2.5 py-1 text-xs font-medium text-neutral-600">
-                                New
-                              </span>
-                            )}
+                            <select
+                              aria-label={`Status for ${lead.name}`}
+                              className="rounded-lg border border-neutral-300 bg-white px-2 py-1.5 text-sm text-neutral-700 outline-none focus:border-brand"
+                              value={lead.status ?? 'new'}
+                              onChange={(e) => handleStatusChange(lead._id, e.target.value as LeadStatus)}
+                            >
+                              <option value="new">New</option>
+                              <option value="contacted">Contacted</option>
+                              <option value="qualified">Qualified</option>
+                              <option value="closed">Closed</option>
+                            </select>
                           </td>
                           <td className="px-3 py-4">
                             <button
